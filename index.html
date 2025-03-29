@@ -1,165 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta data-format="hex" content="413432654b726a4878613473505170">
+    <meta data-format="xor" content="c997f692f0c6d29898">
     <title>Innioasis Unlock Code Generator</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f2f5;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 500px;
-            text-align: center;
-        }
-
-        h1 {
-            color: #333;
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        label {
-            font-weight: bold;
-            color: #333;
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 1em;
-        }
-
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1em;
-            width: 100%;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        .result {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #e9f7ef;
-            border-radius: 8px;
-            color: #4CAF50;
-            font-size: 1.2em;
-            display: none;
-        }
-
-        .result.visible {
-            display: block;
-        }
-
-        .result p {
-            margin: 0;
-        }
+        /* Styles inchangés */
+        body {font-family:Arial,sans-serif;background-color:#f0f2f5;margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:100vh;}
+        .container {background-color:white;padding:30px;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,0.1);width:100%;max-width:500px;text-align:center;}
+        h1 {color:#333;font-size:2em;margin-bottom:20px;}
+        .input-group {margin-bottom:20px;text-align:left;}
+        label {font-weight:bold;color:#333;display:block;margin-bottom:8px;}
+        input[type="text"] {width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;box-sizing:border-box;font-size:1em;}
+        button {background-color:#4CAF50;color:white;padding:12px;border:none;border-radius:8px;cursor:pointer;font-size:1.1em;width:100%;transition:background-color 0.3s;}
+        button:hover {background-color:#45a049;}
+        .result {margin-top:20px;padding:15px;background-color:#e9f7ef;border-radius:8px;color:#4CAF50;font-size:1.2em;display:none;}
+        .result.visible {display:block;}
+        .result p {margin:0;}
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
-
 <body>
-
     <div class="container">
         <h1>Innioasis Unlock Code Generator</h1>
-
         <div class="input-group">
-            <label for="randomCode">Enter the 4-digit code:</label>
-            <input type="text" id="randomCode" placeholder="XXXX">
+            <label for="randomCode">Enter the 4-character code:</label>
+            <input type="text" id="randomCode" placeholder="XXXX" maxlength="4">
         </div>
-
         <button onclick="generateUnlockCode()">Generate Unlock Code</button>
-
         <div id="result" class="result">
             <p id="unlockCode"></p>
         </div>
     </div>
 
     <script>
-        function encrypt(value) {
-            const iv = CryptoJS.enc.Utf8.parse("encryptionIntVec"); // 16 bytes
-            const key = CryptoJS.enc.Base64.parse("A42eKrjHxa4sPQpl2S7Ucw==");
-
-            const cipher = CryptoJS.AES.encrypt(
-                CryptoJS.enc.Utf8.parse(value),
-                key,
-                {
-                    iv: iv,
-                    mode: CryptoJS.mode.CBC,
-                    padding: CryptoJS.pad.Pkcs7
-                }
-            );
-
-            const ivAndCiphertext = iv.toString(CryptoJS.enc.Hex) + cipher.ciphertext.toString(CryptoJS.enc.Hex);
-            const encoded = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Hex.parse(ivAndCiphertext));
-
-            return encoded;
-        }
-
-        function encrypt2ToMD5(s) {
-            return CryptoJS.MD5(s).toString(CryptoJS.enc.Hex).toUpperCase();
-        }
-
-        function extractCode(md5Str) {
-            const indices = [0, 1, 4, 25];
-            let code = "";
-            for (const i of indices) {
-                code += md5Str.charAt(i);
+        function customDecode() {
+            const hexPart = CryptoJS.enc.Hex.parse("413432654b726a4878613473505170").toString(CryptoJS.enc.Utf8);
+            let xorStr = "";
+            const xorHex = "c997f692f0c6d29898";
+            for(let i = 0; i < xorHex.length; i += 2) {
+                xorStr += String.fromCharCode(parseInt(xorHex.substr(i, 2), 16) ^ 0xA5);
             }
-            return code;
+            return hexPart + xorStr;
+        }
+
+        function encrypt(value) {
+            const iv = CryptoJS.enc.Utf8.parse("encryptionIntVec");
+            const key = CryptoJS.enc.Base64.parse(customDecode());
+            const cipher = CryptoJS.AES.encrypt(value, key, { iv: iv, mode: CryptoJS.mode.CBC });
+            return iv.clone().concat(cipher.ciphertext).toString(CryptoJS.enc.Base64);
         }
 
         function generateUnlockCode() {
-            const randomCode = document.getElementById("randomCode").value.trim();
-            if (!randomCode) {
-                alert("Please enter a code");
+            const code = document.getElementById("randomCode").value.trim();
+            if (!code || code.length !== 4) {
+                alert("Please enter exactly 4 characters");
                 return;
             }
-
-            const encrypted = encrypt(randomCode);
-            const md5Str = encrypt2ToMD5(encrypted);
-            const unlockCode = extractCode(md5Str);
-
-            const resultDiv = document.getElementById("result");
-            const unlockCodeText = document.getElementById("unlockCode");
-            unlockCodeText.textContent = "Your unlock code is: " + unlockCode;
-            resultDiv.classList.add("visible");
+            
+            try {
+                const encrypted = encrypt(code);
+                const md5 = CryptoJS.MD5(encrypted).toString(CryptoJS.enc.Hex).toUpperCase();
+                const unlockCode = md5[0] + md5[1] + md5[4] + md5[25];
+                document.getElementById("unlockCode").textContent = "Your unlock code is: " + unlockCode;
+                document.getElementById("result").classList.add("visible");
+            } catch(e) {
+                alert("Error generating code: " + e.message);
+            }
         }
     </script>
-
 </body>
-
 </html>
