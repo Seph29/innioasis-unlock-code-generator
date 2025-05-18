@@ -7,7 +7,6 @@
     <meta data-format="xor" content="c997f692f0c6d29898">
     <title>Innioasis Unlock Code Generator</title>
     <style>
-        /* Styles inchangés */
         body {font-family:Arial,sans-serif;background-color:#f0f2f5;margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:100vh;}
         .container {background-color:white;padding:30px;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,0.1);width:100%;max-width:500px;text-align:center;}
         h1 {color:#333;font-size:2em;margin-bottom:20px;}
@@ -27,7 +26,7 @@
         <h1>Innioasis Unlock Code Generator</h1>
         <div class="input-group">
             <label for="randomCode">Enter the 4-character code:</label>
-            <input type="text" id="randomCode" placeholder="XXXX" maxlength="4">
+            <input type="text" id="randomCode" placeholder="XXXX" maxlength="4" oninput="this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '')">
         </div>
         <button onclick="generateUnlockCode()">Generate Unlock Code</button>
         <div id="result" class="result">
