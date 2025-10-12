@@ -10,6 +10,7 @@ This project is a web-based unlock code generator that takes a 4-digit input, en
 
 ### Algorithm calculation demonstration.
 https://seph29.github.io/innioasis-unlock-code-generator/
+- The demo does not give the real key.
 
 
 ### Disclaimer
