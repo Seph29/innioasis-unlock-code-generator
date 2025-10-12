@@ -1,74 +1,578 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta data-format="hex" content="413432654b726a4878613473505170">
-    <meta data-format="xor" content="c997f692f0c6d29898">
-    <title>Innioasis Unlock Code Generator</title>
-    <style>
-        body {font-family:Arial,sans-serif;background-color:#f0f2f5;margin:0;padding:0;display:flex;justify-content:center;align-items:center;height:100vh;}
-        .container {background-color:white;padding:30px;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,0.1);width:100%;max-width:500px;text-align:center;}
-        h1 {color:#333;font-size:2em;margin-bottom:20px;}
-        .input-group {margin-bottom:20px;text-align:left;}
-        label {font-weight:bold;color:#333;display:block;margin-bottom:8px;}
-        input[type="text"] {width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;box-sizing:border-box;font-size:1em;}
-        button {background-color:#4CAF50;color:white;padding:12px;border:none;border-radius:8px;cursor:pointer;font-size:1.1em;width:100%;transition:background-color 0.3s;}
-        button:hover {background-color:#45a049;}
-        .result {margin-top:20px;padding:15px;background-color:#e9f7ef;border-radius:8px;color:#4CAF50;font-size:1.2em;display:none;}
-        .result.visible {display:block;}
-        .result p {margin:0;}
-    </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Unlock Code Calculator - Calculateur de code de déverrouillage</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
+<style>
+  :root {
+    --primary: #4F46E5;
+    --primary-hover: #4338CA;
+    --success: #10B981;
+    --error: #EF4444;
+    --gray-50: #F9FAFB;
+    --gray-100: #F3F4F6;
+    --gray-200: #E5E7EB;
+    --gray-300: #D1D5DB;
+    --gray-400: #9CA3AF;
+    --gray-500: #6B7280;
+    --gray-600: #4B5563;
+    --gray-700: #374151;
+    --gray-800: #1F2937;
+    --gray-900: #111827;
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --transition: all 0.2s ease-in-out;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(135deg, #f6f7fb 0%, #f0f4f9 100%);
+    margin: 0;
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    line-height: 1.5;
+    color: var(--gray-800);
+    padding: 20px;
+  }
+
+  .card {
+    width: min(92vw, 560px);
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    gap: 15px;
+  }
+
+  h1 {
+    margin: 0 0 10px;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+  }
+
+  .lang-switcher {
+    display: flex;
+    gap: 8px;
+  }
+
+  .lang-btn {
+    padding: 8px 16px;
+    border: 2px solid var(--gray-300);
+    background: white;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    color: var(--gray-600);
+    font-weight: 600;
+    min-width: 50px;
+    text-align: center;
+  }
+
+  .lang-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+
+  .lang-btn:not(.active):hover {
+    background: var(--gray-100);
+    border-color: var(--gray-400);
+  }
+
+  .sub {
+    color: var(--gray-600);
+    margin: 0 0 24px;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .section {
+    margin-bottom: 24px;
+  }
+
+  label {
+    display: block;
+    font-weight: 600;
+    margin: 0 0 10px;
+    color: var(--gray-700);
+    font-size: 0.95rem;
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    transition: var(--transition);
+    background: #fff;
+    color: var(--gray-800);
+  }
+
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  }
+
+  input[readonly] {
+    background: var(--gray-50);
+    color: var(--gray-600);
+    cursor: not-allowed;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+  }
+
+  button {
+    padding: 14px 20px;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: var(--primary);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+
+  button:hover {
+    background: var(--primary-hover);
+  }
+
+  .muted {
+    color: var(--gray-500);
+    font-size: 0.9rem;
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+
+  .out {
+    font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-align: center;
+    padding: 16px;
+    border: 2px dashed var(--success);
+    background: rgba(16, 185, 129, 0.05);
+    border-radius: var(--radius-sm);
+    color: var(--gray-800);
+  }
+
+  .err {
+    color: var(--error);
+    min-height: 1.2em;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  code {
+    background: var(--gray-100);
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 0.85rem;
+    color: var(--gray-700);
+    border: 1px solid var(--gray-200);
+  }
+
+  .key-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .small-btn {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    border-radius: var(--radius-sm);
+    background: var(--gray-200);
+    color: var(--gray-700);
+    border: 0;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .small-btn:hover {
+    background: var(--gray-300);
+  }
+
+  details {
+    margin-top: 20px;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    padding: 0;
+  }
+
+  details[open] {
+    padding-bottom: 16px;
+  }
+
+  summary {
+    padding: 16px;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--gray-700);
+    list-style: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary:after {
+    content: "▶";
+    float: right;
+    transition: var(--transition);
+  }
+
+  details[open] summary:after {
+    transform: rotate(90deg);
+  }
+
+  .details-content {
+    padding: 0 16px;
+  }
+
+  .info-box {
+    background: rgba(59, 130, 246, 0.05);
+    border-left: 4px solid #3B82F6;
+    padding: 14px 16px;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin: 20px 0;
+  }
+
+  @media (max-width: 640px) {
+    .card {
+      padding: 20px;
+    }
+    
+    .header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+    
+    .lang-switcher {
+      align-self: flex-end;
+    }
+    
+    h1 {
+      font-size: 1.5rem;
+    }
+    
+    .key-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>Innioasis Unlock Code Generator</h1>
-        <div class="input-group">
-            <label for="randomCode">Enter the 4-character code:</label>
-            <input type="text" id="randomCode" placeholder="XXXX" maxlength="4" oninput="this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '')">
-        </div>
-        <button onclick="generateUnlockCode()">Generate Unlock Code</button>
-        <div id="result" class="result">
-            <p id="unlockCode"></p>
-        </div>
+  <div class="card">
+    <div class="header">
+      <h1>🔓 <span data-i18n="title">Calculateur de code de déverrouillage</span></h1>
+      <div class="lang-switcher">
+        <button class="lang-btn active" data-lang="fr">FR</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
+    </div>
+    
+    <p class="sub" data-i18n="subtitle">Démonstration de l'algorithme de calcul.</p>
+
+    <div class="section">
+      <label for="key" data-i18n="keyLabel">Clé (Base64)</label>
+      <div class="key-row">
+        <input id="key" type="password" placeholder="L2K8Z7x1N0SqA3ePv6Yj9w==" autocomplete="off" spellcheck="false" />
+        <button id="toggleKey" class="small-btn" type="button" data-i18n="showBtn">Afficher</button>
+        <button id="clearKey" class="small-btn" type="button" data-i18n="clearBtn">Effacer</button>
+      </div>
     </div>
 
-    <script>
-        function customDecode() {
-            const hexPart = CryptoJS.enc.Hex.parse("413432654b726a4878613473505170").toString(CryptoJS.enc.Utf8);
-            let xorStr = "";
-            const xorHex = "c997f692f0c6d29898";
-            for(let i = 0; i < xorHex.length; i += 2) {
-                xorStr += String.fromCharCode(parseInt(xorHex.substr(i, 2), 16) ^ 0xA5);
-            }
-            return hexPart + xorStr;
-        }
+    <div class="section">
+      <label for="code" data-i18n="codeLabel">Code d'erreur (4 caractères)</label>
+      <div class="row">
+        <input id="code" maxlength="4" placeholder="Ex: AB12" autocomplete="one-time-code" />
+        <button id="go" data-i18n="calculateBtn">Calculer</button>
+      </div>
+      <div id="err" class="err" aria-live="polite"></div>
+    </div>
 
-        function encrypt(value) {
-            const iv = CryptoJS.enc.Utf8.parse("encryptionIntVec");
-            const key = CryptoJS.enc.Base64.parse(customDecode());
-            const cipher = CryptoJS.AES.encrypt(value, key, { iv: iv, mode: CryptoJS.mode.CBC });
-            return iv.clone().concat(cipher.ciphertext).toString(CryptoJS.enc.Base64);
-        }
+    <div class="section">
+      <label for="unlock" data-i18n="resultLabel">Résultat (4 caractères)</label>
+      <div id="unlock" class="out" aria-live="polite">----</div>
+    </div>
 
-        function generateUnlockCode() {
-            const code = document.getElementById("randomCode").value.trim();
-            if (!code || code.length !== 4) {
-                alert("Please enter exactly 4 characters");
-                return;
-            }
-            
-            try {
-                const encrypted = encrypt(code);
-                const md5 = CryptoJS.MD5(encrypted).toString(CryptoJS.enc.Hex).toUpperCase();
-                const unlockCode = md5[0] + md5[1] + md5[4] + md5[25];
-                document.getElementById("unlockCode").textContent = "Your unlock code is: " + unlockCode;
-                document.getElementById("result").classList.add("visible");
-            } catch(e) {
-                alert("Error generating code: " + e.message);
-            }
-        }
-    </script>
+    <details>
+      <summary data-i18n="detailsTitle">Étapes intermédiaires</summary>
+      <div class="details-content">
+        <label data-i18n="encryptedLabel">Chaîne chiffrée (Base64)</label>
+        <textarea id="enc" rows="2" readonly></textarea>
+        
+        <label data-i18n="md5Label">MD5 (hexadécimal)</label>
+        <input id="md5" readonly>
+        
+        <p class="muted" data-i18n="positionsText">Positions utilisées : <code>0, 1, 4, 25</code></p>
+      </div>
+    </details>
+
+    <div class="info-box">
+      <p class="muted" style="margin:0" data-i18n="algorithmText">
+        Algorithme : AES-CBC → Base64 → MD5 → positions 0,1,4,25
+      </p>
+    </div>
+  </div>
+
+<script>
+// Textes multilingues
+const translations = {
+  fr: {
+    title: "Calculateur de code de déverrouillage",
+    subtitle: "Démonstration de l'algorithme de calcul.",
+    keyLabel: "Clé (Base64)",
+    showBtn: "Afficher",
+    hideBtn: "Masquer",
+    clearBtn: "Effacer",
+    codeLabel: "Code d'erreur (4 caractères)",
+    calculateBtn: "Calculer",
+    resultLabel: "Résultat (4 caractères)",
+    detailsTitle: "Étapes intermédiaires",
+    encryptedLabel: "Chaîne chiffrée (Base64)",
+    md5Label: "MD5 (hexadécimal)",
+    positionsText: "Positions utilisées :",
+    algorithmText: "Algorithme : AES-CBC → Base64 → MD5 → positions 0,1,4,25",
+    keyPlaceholder: "ex: L2K8Z7x1N0SqA3ePv6Yj9w==",
+    codePlaceholder: "Ex: AB12",
+    errors: {
+      noKey: "Veuillez saisir la clé.",
+      invalidCode: "Le code doit contenir 4 caractères.",
+      calculationError: "Erreur de calcul (clé invalide ?)"
+    }
+  },
+  en: {
+    title: "Unlock Code Calculator",
+    subtitle: "Algorithm calculation demonstration.",
+    keyLabel: "Key (Base64)",
+    showBtn: "Show",
+    hideBtn: "Hide",
+    clearBtn: "Clear",
+    codeLabel: "Error code (4 characters)",
+    calculateBtn: "Calculate",
+    resultLabel: "Result (4 characters)",
+    detailsTitle: "Intermediate steps",
+    encryptedLabel: "Encrypted string (Base64)",
+    md5Label: "MD5 (hexadecimal)",
+    positionsText: "Used positions:",
+    algorithmText: "Algorithm: AES-CBC → Base64 → MD5 → positions 0,1,4,25",
+    keyPlaceholder: "ex: L2K8Z7x1N0SqA3ePv6Yj9w==",
+    codePlaceholder: "Ex: AB12",
+    errors: {
+      noKey: "Please enter the key.",
+      invalidCode: "Code must contain 4 characters.",
+      calculationError: "Calculation error (invalid key?)"
+    }
+  }
+};
+
+// État de la langue
+let currentLang = 'fr';
+
+// Récupération des éléments DOM
+const $key = document.getElementById('key');
+const $toggle = document.getElementById('toggleKey');
+const $clear = document.getElementById('clearKey');
+const $code = document.getElementById('code');
+const $go = document.getElementById('go');
+const $err = document.getElementById('err');
+const $enc = document.getElementById('enc');
+const $md5 = document.getElementById('md5');
+const $out = document.getElementById('unlock');
+
+// Fonction de traduction
+function updateLanguage(lang) {
+  currentLang = lang;
+  
+  // Mettre à jour tous les éléments avec data-i18n
+  document.querySelectorAll('[data-i18n]').forEach(element => {
+    const key = element.getAttribute('data-i18n');
+    if (translations[lang][key]) {
+      if (element.tagName === 'INPUT' && element.hasAttribute('placeholder')) {
+        element.placeholder = translations[lang][key];
+      } else {
+        element.textContent = translations[lang][key];
+      }
+    }
+  });
+  
+  // Mettre à jour les boutons de langue
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+  });
+  
+  // Mettre à jour le texte du bouton d'affichage si nécessaire
+  if ($key.type === 'text') {
+    $toggle.textContent = translations[lang].hideBtn;
+  } else {
+    $toggle.textContent = translations[lang].showBtn;
+  }
+}
+
+// Gestion du changement de langue
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const lang = btn.getAttribute('data-lang');
+    updateLanguage(lang);
+  });
+});
+
+// Gestion de l'affichage/masquage de la clé
+$toggle.addEventListener('click', () => {
+  const isPassword = $key.type === 'password';
+  $key.type = isPassword ? 'text' : 'password';
+  $toggle.textContent = isPassword ? translations[currentLang].hideBtn : translations[currentLang].showBtn;
+});
+
+// Effacer la clé
+$clear.addEventListener('click', () => {
+  $key.value = '';
+  $key.focus();
+});
+
+// Validation du code (4 caractères alphanumériques)
+$code.addEventListener('input', () => {
+  $code.value = $code.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4);
+});
+
+// Calcul principal
+$go.addEventListener('click', async () => {
+  // Réinitialisation
+  $err.textContent = '';
+  $out.textContent = '----';
+  $enc.value = '';
+  $md5.value = '';
+
+  const keyB64 = $key.value.trim();
+  const code = $code.value.toUpperCase();
+
+  // Validation
+  if (!keyB64) {
+    $err.textContent = translations[currentLang].errors.noKey;
+    return;
+  }
+  
+  if (code.length !== 4) {
+    $err.textContent = translations[currentLang].errors.invalidCode;
+    return;
+  }
+
+  try {
+    // Chiffrement AES
+    const encryptedB64 = await encryptThenConcatIVBase64(code, keyB64);
+    
+    // Calcul MD5 avec la librairie externe
+    const md5HexUpper = md5(encryptedB64).toUpperCase();
+    
+    // Extraction des positions
+    const result = md5HexUpper[0] + md5HexUpper[1] + md5HexUpper[4] + md5HexUpper[25];
+
+    // Affichage des résultats
+    $enc.value = encryptedB64;
+    $md5.value = md5HexUpper;
+    $out.textContent = result;
+  } catch (e) {
+    console.error(e);
+    $err.textContent = translations[currentLang].errors.calculationError;
+  }
+});
+
+// Fonction de chiffrement AES-CBC
+async function encryptThenConcatIVBase64(plain4, keyBase64) {
+  const keyBytes = base64ToBytes(keyBase64);
+  
+  // Validation de la taille de la clé
+  if (![16, 24, 32].includes(keyBytes.length)) {
+    throw new Error('Taille de clé AES invalide');
+  }
+
+  // IV fixe
+  const iv = new TextEncoder().encode('encryptionIntVec');
+  
+  // Importation de la clé
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw', keyBytes, { name: 'AES-CBC' }, false, ['encrypt']
+  );
+  
+  // Chiffrement
+  const ciphertext = await crypto.subtle.encrypt(
+    { name: 'AES-CBC', iv }, 
+    cryptoKey, 
+    new TextEncoder().encode(plain4)
+  );
+  
+  // Concaténation IV + ciphertext
+  const full = new Uint8Array(iv.length + ciphertext.byteLength);
+  full.set(iv, 0);
+  full.set(new Uint8Array(ciphertext), iv.length);
+  
+  return bytesToBase64(full);
+}
+
+// Conversion Base64 -> bytes
+function base64ToBytes(b64) {
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) {
+    bytes[i] = bin.charCodeAt(i);
+  }
+  return bytes;
+}
+
+// Conversion bytes -> Base64
+function bytesToBase64(bytes) {
+  let bin = '';
+  for (let i = 0; i < bytes.length; i++) {
+    bin += String.fromCharCode(bytes[i]);
+  }
+  return btoa(bin);
+}
+
+// Initialisation de la langue
+updateLanguage('fr');
+</script>
 </body>
 </html>
