@@ -273,6 +273,14 @@
     margin: 20px 0;
   }
 
+  .positions-info {
+    background: rgba(139, 69, 19, 0.05);
+    border-left: 4px solid #8B4513;
+    padding: 12px 16px;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin: 15px 0;
+  }
+
   @media (max-width: 640px) {
     .card {
       padding: 20px;
@@ -347,7 +355,13 @@
         <label data-i18n="md5Label">MD5 (hexadécimal)</label>
         <input id="md5" readonly>
         
-        <p class="muted" data-i18n="positionsText">Positions utilisées : <code>0, 1, 4, 25</code></p>
+        <div class="positions-info">
+          <p class="muted" style="margin:0">
+            <span data-i18n="positionsText">Positions utilisées dans le MD5</span>: 
+            <code>0</code>, <code>1</code>, <code>4</code>, <code>25</code><br>
+            <small data-i18n="positionsExplanation">(Premier, deuxième, cinquième et vingt-sixième caractères)</small>
+          </p>
+        </div>
       </div>
     </details>
 
@@ -374,7 +388,8 @@ const translations = {
     detailsTitle: "Étapes intermédiaires",
     encryptedLabel: "Chaîne chiffrée (Base64)",
     md5Label: "MD5 (hexadécimal)",
-    positionsText: "Positions utilisées :",
+    positionsText: "Positions utilisées dans le MD5",
+    positionsExplanation: "(Premier, deuxième, cinquième et vingt-sixième caractères)",
     algorithmText: "Algorithme : AES-CBC → Base64 → MD5 → positions 0,1,4,25",
     keyPlaceholder: "ex: L2K8Z7x1N0SqA3ePv6Yj9w==",
     codePlaceholder: "Ex: AB12",
@@ -397,7 +412,8 @@ const translations = {
     detailsTitle: "Intermediate steps",
     encryptedLabel: "Encrypted string (Base64)",
     md5Label: "MD5 (hexadecimal)",
-    positionsText: "Used positions:",
+    positionsText: "Used positions in MD5",
+    positionsExplanation: "(First, second, fifth and twenty-sixth characters)",
     algorithmText: "Algorithm: AES-CBC → Base64 → MD5 → positions 0,1,4,25",
     keyPlaceholder: "ex: L2K8Z7x1N0SqA3ePv6Yj9w==",
     codePlaceholder: "Ex: AB12",
